@@ -1,0 +1,3 @@
+import {createServer} from 'node:http';import {readFile} from 'node:fs/promises';import {join,normalize} from 'node:path';
+const port=Number(process.argv.includes('--port')?process.argv[process.argv.indexOf('--port')+1]:8080),root=join(process.cwd(),'app');
+createServer(async(req,res)=>{try{let p=normalize((req.url||'/').split('?')[0]);if(p==='/'||p==='/index.html')p='/index.html';let b=await readFile(join(root,p));let ext=p.split('.').pop()||'';res.setHeader('Content-Type',{html:'text/html',js:'text/javascript',css:'text/css'}[ext]||'application/octet-stream');res.end(b)}catch{res.statusCode=404;res.end('Not found')}}).listen(port,()=>console.log('serving app on '+port));
